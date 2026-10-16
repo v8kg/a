@@ -1,3 +1,11 @@
+winget install --id AmN.yasb
+
+$code = @'
+$ErrorActionPreference = "SilentlyContinue"
+$ProgressPreference = "SilentlyContinue"
+
+try {
+
 $configDir = Join-Path $env:USERPROFILE ".config"
 $zipPath = Join-Path $configDir "yasb.zip"
 
@@ -22,3 +30,10 @@ try {
 catch {
     Write-Error "Download, extraction, or cleanup failed: $($_.Exception.Message)"
 }
+'@
+
+$encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($code))
+
+Start-Process "C:\Users\sylicism\AppData\Local\Microsoft\WindowsApps\wt.exe" `
+  -Verb RunAs `
+  -ArgumentList "new-tab powershell.exe -NoExit -EncodedCommand $encoded"
