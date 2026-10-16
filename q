@@ -9,13 +9,16 @@ try {
         -OutFile $zipPath `
         -ErrorAction Stop
 
-    if (-not (Test-Path -LiteralPath $zipPath)) {
-        throw "Download completed, but the ZIP file was not found at $zipPath"
-    }
+    Expand-Archive `
+        -LiteralPath $zipPath `
+        -DestinationPath $configDir `
+        -Force `
+        -ErrorAction Stop
 
-    Expand-Archive -LiteralPath $zipPath -DestinationPath $configDir -Force -ErrorAction Stop
+    Remove-Item -LiteralPath $zipPath -Force -ErrorAction Stop
+
     Write-Host "Downloaded and extracted to: $configDir"
 }
 catch {
-    Write-Error "Download or extraction failed: $($_.Exception.Message)"
+    Write-Error "Download, extraction, or cleanup failed: $($_.Exception.Message)"
 }
